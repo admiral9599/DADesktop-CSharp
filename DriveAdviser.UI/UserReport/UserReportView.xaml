@@ -1,0 +1,48 @@
+﻿<controls:MetroWindow x:Class="DriveAdviser.UI.UserReport.UserReportView"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="clr-namespace:DriveAdviser.UI.UserReport"
+		xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+		xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+		xmlns:system="clr-namespace:System;assembly=mscorlib"
+		mc:Ignorable="d"
+		Title="Error Reporting" 
+		WindowStartupLocation="CenterScreen"
+	   
+		GlowBrush="{DynamicResource AccentColorBrush}"
+	DataContext="{Binding UserReportViewModel, Source={StaticResource Locator}}" ResizeMode="NoResize" Height="315" Width="520">
+
+    <materialDesign:DialogHost IsOpen="{Binding IsDialogOpen}">
+        <Grid >
+            <Grid Margin="0,70,0,46">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="33*"/>
+                </Grid.ColumnDefinitions>
+
+                <Label x:Name="label" FontSize="15" Content="Explain Error Below" HorizontalAlignment="Left" Margin="10,0,0,134" Width="180" Grid.ColumnSpan="2"/>
+                <RichTextBox x:Name="richTextBox" VerticalScrollBarVisibility="Visible" FontSize="15" HorizontalScrollBarVisibility="Auto" HorizontalAlignment="Center" Margin="0,30.96,0,0" Grid.ColumnSpan="2" controls:TextBoxHelper.Watermark="Name">
+                    <FlowDocument>
+                        <Paragraph>
+                            <Run Text="{Binding ErrorText}"/>
+                        </Paragraph>
+                    </FlowDocument>
+                </RichTextBox>
+            </Grid>
+            <TextBox x:Name="textBox" HorizontalAlignment="Center" FontSize="15" Height="30" Margin="137,31,137,0" TextWrapping="Wrap" Text="{Binding Name}" VerticalAlignment="Top" Width="240" controls:TextBoxHelper.Watermark="Name"/>
+            <Label x:Name="label1" Content="Fill in your Name" FontSize="15" HorizontalAlignment="Left" Margin="137,5,0,0" VerticalAlignment="Top"/>
+            <Button x:Name="button" Content="Send Report" HorizontalAlignment="Center" Command="{Binding SendReportCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" VerticalAlignment="Top" Width="114" Margin="0,245,0,0"/>
+
+        </Grid>
+        <materialDesign:DialogHost.DialogContent>
+            <StackPanel Margin="16">
+                <TextBlock >Sending Report. This windows will<LineBreak /><LineBreak /> close automatically when finished.</TextBlock>
+
+            </StackPanel>
+        </materialDesign:DialogHost.DialogContent>
+    </materialDesign:DialogHost>
+
+</controls:MetroWindow>
+

@@ -1,0 +1,223 @@
+﻿<UserControl x:Class="DriveAdviser.UI.Drives.DriveOverview"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:local="clr-namespace:DriveAdviser.UI.Drives"
+			 xmlns:drive="clr-namespace:DriveAdviser.Core.Models;assembly=DriveAdviser.Core"
+			 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+			 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+			 xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
+			 xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+			 xmlns:nav="clr-namespace:DriveAdviser.UI.Navigation"
+			 mc:Ignorable="d" 
+			 FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+			 d:DesignHeight="300" d:DesignWidth="600"
+			  d:DataContext="{d:DesignInstance local:DriveOverviewViewModel}" FontSize="14"
+			 
+			  
+			 >
+   
+
+	<UserControl.Resources>
+		<local:HealthToColorConverter x:Key="HealthToColorConverter"/>
+		<local:NumberToNaConverter x:Key="NumberToNAConverter"/>
+		<local:HealthToIconConverter x:Key="HealthToIconConverter"/>
+		<DataTemplate x:Key="DriveOverviewTemplate" DataType="{x:Type drive:Drive}">
+			<Grid  HorizontalAlignment="Stretch">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<iconPacks:PackIconModern Kind="Thermometer" Height="32" Width="32" VerticalAlignment="Bottom" Margin="0 0 0 0">
+					<iconPacks:PackIconModern.Style>
+						<Style TargetType="iconPacks:PackIconModern">
+							<Setter Property="Foreground" Value="CornflowerBlue"/>
+							<Style.Triggers>
+
+
+
+							</Style.Triggers>
+						</Style>
+					</iconPacks:PackIconModern.Style>
+				</iconPacks:PackIconModern>
+				<iconPacks:PackIconModern x:Name="Hello" Grid.Column="0"  Foreground="{Binding HealthPercentage, Converter={StaticResource HealthToColorConverter}}"  Height="32" Width="32" Margin="0 52 0 0">
+					<iconPacks:PackIconModern.Style>
+						<Style TargetType="iconPacks:PackIconModern">
+							<Setter Property="Kind" Value="{Binding HealthPercentage, Converter={StaticResource HealthToIconConverter}}"/>
+						
+						</Style>
+					</iconPacks:PackIconModern.Style>
+				</iconPacks:PackIconModern>
+				<Grid Margin="8 8 8 0" HorizontalAlignment="Stretch" Grid.Column="1">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<StackPanel>
+						<TextBlock Text="{Binding DriveLetter ,StringFormat='Drive {0}:'}" Style="{StaticResource MaterialDesignSubheadingTextBlock}" FontSize="28" >
+							
+						</TextBlock>
+						<TextBlock Text="" Style="{StaticResource MaterialDesignTitleTextBlock}" Height="15" />
+						<TextBlock Text="{Binding HealthPercentage ,Converter={StaticResource NumberToNAConverter},StringFormat='Health: {0}%'}" Style="{StaticResource  MaterialDesignBody1TextBlock}" FontSize="24" />
+
+						<TextBlock Text="{Binding Tempurature, StringFormat='Temp: {0} °C'}" Style="{StaticResource MaterialDesignBody1TextBlock}" FontSize="24" Margin="0 5 0 0" />
+					   
+					</StackPanel>
+					<Border BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="0 1 0 0"
+							Grid.Row="1" 
+							TextOptions.TextFormattingMode="Display"
+							TextOptions.TextRenderingMode="Auto"
+							SnapsToDevicePixels="True"
+							Margin="0 4 0 0">
+						<!--<TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Margin="0 4 0 0">
+							<Run FontSize="13">Model: </Run>
+							<Run Text="{Binding Model, Mode=OneWay}" FontSize="13" />
+
+						</TextBlock>-->
+
+					</Border>
+				</Grid>
+			</Grid>
+		</DataTemplate>
+
+	</UserControl.Resources>
+	<Grid>
+		<simpleChildWindow:ChildWindow
+			IsOpen="{Binding IsChildWindowOpen}"
+			ChildWindowHeight="250"
+			ChildWindowWidth="300"
+
+			ShowCloseButton="True"
+
+			Title="Enter Email Address" BorderThickness="1">
+			<Grid>
+				<TextBlock x:Name="ChildText" HorizontalAlignment="Left" TextWrapping="Wrap"
+						   Text="Please enter your email address below to receive alerts" VerticalAlignment="Top"
+						   Height="85" Width="290" FontSize="22" />
+				<TextBox controls:TextBoxHelper.Watermark="Enter Email Address" x:Name="EmailBox"
+						 HorizontalAlignment="Left" Height="29" Margin="0,105,0,0" TextWrapping="Wrap"
+						 VerticalAlignment="Top" Width="272" Text="{Binding EmailAddress, UpdateSourceTrigger=PropertyChanged}" />
+
+				<Button x:Name="EmailSave" Margin="82,0,81,10"
+						VerticalAlignment="Bottom" Height="30" IsDefault="True"
+						Command="{Binding SaveEmailAddressCommand, Mode=OneWay}" >
+					<StackPanel Orientation="Horizontal">
+						<iconPacks:PackIconModern  Kind="Save" Foreground="{DynamicResource AccentSelectedColorBrush}" Spin="{Binding IsSaving}"/>
+						<TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Foreground="{DynamicResource AccentSelectedColorBrush}" >
+							<TextBlock.Style>
+								<Style TargetType="TextBlock">
+									<Setter Property="Text" Value="Save Email"/>
+									<Style.Triggers>
+
+										<DataTrigger Binding="{Binding IsSaving}" Value="true">
+											<Setter Property="Text" Value="Saving"/>
+										</DataTrigger>
+									</Style.Triggers>
+								</Style>
+							</TextBlock.Style>
+						</TextBlock>
+					</StackPanel>
+				</Button>
+				<TextBox x:Name="AlertBox" Text="{Binding AlertText}" HorizontalAlignment="Left" Height="34"
+						 Margin="0,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="272"
+						 BorderThickness="0" Cursor="None" IsEnabled="False" />
+
+			</Grid>
+		</simpleChildWindow:ChildWindow>
+
+
+		<DockPanel>
+
+			<materialDesign:TransitioningContent DockPanel.Dock="Top">
+				<materialDesign:TransitioningContent.OpeningEffects>
+					<materialDesign:TransitionEffect Kind="SlideInFromTop" Duration="0:0:1.0" />
+					<materialDesign:TransitionEffect Kind="FadeIn" Duration="0:0:1.0" />
+					
+				</materialDesign:TransitioningContent.OpeningEffects>
+				<!--<materialDesign:ColorZone Mode="Dark" Height="200" Margin="4 0 4 0" materialDesign:ShadowAssist.ShadowDepth="Depth3"
+									  Width="600" HorizontalAlignment="Left">-->
+					<Grid Height="175">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Image Source="../images/driveadviserlogo600x130.png" Stretch="Uniform" Margin="0,0,0,36" Width="600" Height="130" />
+
+<materialDesign:ColorZone Mode="Dark" VerticalAlignment="Bottom" HorizontalAlignment="Left" materialDesign:ShadowAssist.ShadowDepth="Depth3">
+						<DockPanel  HorizontalAlignment="Right" Grid.Row="1" Width="600">
+							<Button Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding ReEnterEmailCommand}" Margin="8,2,0,2" Width="149.5" >
+								<StackPanel Orientation="Horizontal" >
+									<iconPacks:PackIconModern Kind="Email" Foreground="{DynamicResource AccentSelectedColorBrush}" />
+									<TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Foreground="{DynamicResource AccentSelectedColorBrush}" Text="Re-enter Email"/>
+								</StackPanel>
+							</Button>
+							<Button Style="{DynamicResource MaterialDesignFlatButton}"  Margin="0 2 8 2" HorizontalAlignment="Right" Command="{Binding RefreshDrivesCommand}">
+								<StackPanel Orientation="Horizontal">
+									<iconPacks:PackIconModern x:Name="icon" Kind="Refresh" Foreground="{DynamicResource AccentSelectedColorBrush}" Spin="{Binding IsBusy}"/>
+									<TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Foreground="{DynamicResource AccentSelectedColorBrush}" >
+										<TextBlock.Style>
+											<Style TargetType="TextBlock">
+												<Setter Property="Text" Value="Refresh Drives"/>
+											   
+												<Style.Triggers>
+
+													<DataTrigger Binding="{Binding IsBusy}" Value="true">
+														<Setter Property="Text" Value="Working"/>
+													   
+													</DataTrigger>
+												</Style.Triggers>
+											</Style>
+										</TextBlock.Style>
+									</TextBlock>
+								</StackPanel>
+							</Button>
+						</DockPanel>
+					</materialDesign:ColorZone>
+				</Grid>
+				<!--</materialDesign:ColorZone>-->
+			</materialDesign:TransitioningContent>
+			<ScrollViewer Margin="0,12,0,0" >
+				<ItemsControl ItemsSource="{Binding Drives}" VerticalAlignment="Top" Margin="0 4 0 0">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<UniformGrid Columns="2" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate DataType="{x:Type drive:Drive}">
+							<materialDesign:TransitioningContent>
+								<materialDesign:TransitioningContent.OpeningEffects>
+									<materialDesign:TransitionEffect Kind="SlideInFromRight" Duration="0:0:0.9" />
+									<materialDesign:TransitionEffect Kind="FadeIn" Duration="0:0:0.9" />
+								</materialDesign:TransitioningContent.OpeningEffects>
+								<materialDesign:Card Width="280" Margin="0 0 0 9" TextOptions.TextFormattingMode="Ideal" VerticalAlignment="Stretch">
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition Width="*" />
+										</Grid.ColumnDefinitions>
+										<Grid.RowDefinitions>
+											<RowDefinition Height="*" />
+											<RowDefinition Height="Auto" />
+										</Grid.RowDefinitions>
+										<TextBlock Text="{Binding Year}" Style="{StaticResource MaterialDesignDisplay1TextBlock}" Margin="8"
+											   VerticalAlignment="Center"/>
+										<ContentControl Content="{Binding}" Grid.Row="0" Grid.Column="1" ContentTemplate="{StaticResource DriveOverviewTemplate}">
+
+										</ContentControl>
+										<Button Grid.Row="1" Grid.Column="1" Style="{DynamicResource MaterialDesignFlatButton}" 
+											Command="{x:Static nav:NavigationCommands.ShowDriveCommand}"
+											CommandParameter="{Binding }"
+											
+											HorizontalAlignment="Right" Margin="8" >More Info</Button>
+									</Grid>
+								</materialDesign:Card>
+							</materialDesign:TransitioningContent>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</ScrollViewer>
+		</DockPanel>
+	</Grid>
+</UserControl>

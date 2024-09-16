@@ -1,0 +1,83 @@
+﻿<controls:MetroWindow x:Class="DriveAdviser.UI.MainWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		 xmlns:driveview="clr-namespace:DriveAdviser.UI.Drives" 
+					  xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+	   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+		xmlns:local="clr-namespace:DriveAdviser.UI"
+		xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
+		xmlns:tb="http://www.hardcodet.net/taskbar"
+		mc:Ignorable="d"
+	 
+		 TextElement.FontWeight="Regular"
+		TextElement.FontSize="13"
+		TextOptions.TextFormattingMode="Ideal" 
+		TextOptions.TextRenderingMode="Auto"       
+		WindowStartupLocation="CenterScreen"
+		FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"             
+		Title="{Binding Version, StringFormat='Drive Adviser {0}'}" Height="450" Width="625"
+		MaxHeight="650"
+	   
+		GlowBrush="{DynamicResource AccentColorBrush}"
+	DataContext="{Binding MainWindowViewModel, Source={StaticResource Locator}}" ResizeMode="NoResize" SizeToContent="Height"
+					  >
+	<controls:MetroWindow.RightWindowCommands>
+		<controls:WindowCommands>
+			<Button Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding OpenWebsiteCommand}" HorizontalAlignment="Right" >
+				<StackPanel Orientation="Horizontal" >
+					<iconPacks:PackIconModern Kind="Book" Foreground="{DynamicResource AccentSelectedColorBrush}" Margin="0,0,3,0"/>
+					<TextBlock  VerticalAlignment="Center" Foreground="{DynamicResource AccentSelectedColorBrush}" Text="View FAQ"/>
+				</StackPanel>
+			</Button>
+		</controls:WindowCommands>
+	</controls:MetroWindow.RightWindowCommands>
+	<!--d:DataContext="{d:DesignInstance local:MainWindowViewModel, d:IsDesignTimeCreatable=True}" SizeToContent="Height" ResizeMode="NoResize"-->
+	<Window.Resources>
+		<DataTemplate DataType="{x:Type driveview:DriveOverviewViewModel}">
+			<driveview:DriveOverview HorizontalAlignment="Stretch" Width="600"></driveview:DriveOverview>
+		</DataTemplate>
+		<DataTemplate DataType="{x:Type driveview:DriveViewModel}" >
+			<driveview:DriveView Height="{Binding ActualHeight, ElementName=transitioner}"/>
+		</DataTemplate>
+	</Window.Resources>
+	<Grid>
+
+		<materialDesign:DialogHost>
+
+			<materialDesign:Transitioner x:Name="transitioner" SelectedIndex="{Binding ActiveSlideIndex}" 
+									 AutoApplyTransitionOrigins="True"
+									 ItemsSource="{Binding Slides}"   
+									 
+									 HorizontalAlignment="Center" Margin="0,0,0,0" Width="677"
+									 />
+
+		</materialDesign:DialogHost>
+
+
+		<tb:TaskbarIcon x:Name="Taskbar"
+						IconSource="images/Green128.ico"
+						LeftClickCommand="{Binding OpenWindowCommand}"
+						LeftClickCommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+						DoubleClickCommand="{Binding OpenWindowCommand}"
+						DoubleClickCommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+						>
+
+			<tb:TaskbarIcon.ContextMenu>
+				<ContextMenu >
+
+                    <!--<MenuItem Header="Send Error Report"
+							  Command="{Binding OpenUserReportCommand}"
+                              
+							  />-->
+
+                    <MenuItem Header="Exit Drive Adviser"
+							  Command="{Binding ExitProgramCommand}"
+							  CommandParameter="{Binding}" />
+				</ContextMenu>
+			</tb:TaskbarIcon.ContextMenu>
+		</tb:TaskbarIcon>
+	</Grid>
+</controls:MetroWindow>
